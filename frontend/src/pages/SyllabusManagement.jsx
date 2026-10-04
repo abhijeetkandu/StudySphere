@@ -19,6 +19,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   BookOpen,
   ChevronDown,
@@ -67,9 +68,9 @@ export default function SyllabusManagement() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('/api/admin/courses').then((res) => res.json()).then(setCourses).catch(() => {});
-    fetch('/api/admin/semesters').then((res) => res.json()).then(setSemesters).catch(() => {});
-    fetch('/api/admin/subjects').then((res) => res.json()).then(setSubjects).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/courses`).then((res) => res.json()).then(setCourses).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/semesters`).then((res) => res.json()).then(setSemesters).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/subjects`).then((res) => res.json()).then(setSubjects).catch(() => {});
   }, []);
 
   const loadSyllabus = (subId) => {
@@ -77,7 +78,7 @@ export default function SyllabusManagement() {
       setSyllabus([]);
       return;
     }
-    fetch(`/api/syllabus/subjects/${subId}`)
+    fetch(`${API_BASE_URL}/api/syllabus/subjects/${subId}`)
       .then((res) => res.json())
       .then(setSyllabus)
       .catch(() => showError('Failed to load syllabus'));
@@ -90,7 +91,7 @@ export default function SyllabusManagement() {
   const handleAddChapter = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/syllabus/subjects/${selectedSubject}/chapters`, {
+      const res = await fetch(`${API_BASE_URL}/api/syllabus/subjects/${selectedSubject}/chapters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newChapter),
@@ -111,7 +112,7 @@ export default function SyllabusManagement() {
   const handleAddTopic = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/syllabus/chapters/${newTopic.chapterId}/topics`, {
+      const res = await fetch(`${API_BASE_URL}/api/syllabus/chapters/${newTopic.chapterId}/topics`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: newTopic.title, content: newTopic.content }),
@@ -133,13 +134,13 @@ export default function SyllabusManagement() {
     const { type, id, chapterId } = deleteDialog;
     try {
       if (type === 'chapter') {
-        const res = await fetch(`/api/syllabus/chapters/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_BASE_URL}/api/syllabus/chapters/${id}`, { method: 'DELETE' });
         if (res.ok) {
           showSuccess('Chapter removed');
           loadSyllabus(selectedSubject);
         }
       } else if (type === 'topic') {
-        const res = await fetch(`/api/syllabus/topics/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_BASE_URL}/api/syllabus/topics/${id}`, { method: 'DELETE' });
         if (res.ok) {
           showSuccess('Topic removed');
           loadSyllabus(selectedSubject);

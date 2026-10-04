@@ -17,6 +17,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   FileText,
   FileCode,
@@ -73,9 +74,9 @@ export default function StudyMaterials() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('/api/admin/courses').then((res) => res.json()).then(setCourses).catch(() => {});
-    fetch('/api/admin/semesters').then((res) => res.json()).then(setSemesters).catch(() => {});
-    fetch('/api/admin/subjects').then((res) => res.json()).then(setSubjects).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/courses`).then((res) => res.json()).then(setCourses).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/semesters`).then((res) => res.json()).then(setSemesters).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/subjects`).then((res) => res.json()).then(setSubjects).catch(() => {});
   }, []);
 
   const loadMaterials = (subId) => {
@@ -83,7 +84,7 @@ export default function StudyMaterials() {
       setMaterials([]);
       return;
     }
-    fetch(`/api/materials/subject/${subId}`)
+    fetch(`${API_BASE_URL}/api/materials/subject/${subId}`)
       .then((res) => res.json())
       .then(setMaterials)
       .catch(() => showError('Failed to load study materials'));
@@ -102,7 +103,7 @@ export default function StudyMaterials() {
         teacherId: user.id,
       };
 
-      const res = await fetch('/api/materials', {
+      const res = await fetch(`${API_BASE_URL}/api/materials`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -124,7 +125,7 @@ export default function StudyMaterials() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/materials/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/materials/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Material deleted');
         setDeleteTarget(null);

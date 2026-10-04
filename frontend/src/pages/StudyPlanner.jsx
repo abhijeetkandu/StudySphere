@@ -22,6 +22,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Sparkles,
   Calendar as CalendarIcon,
@@ -104,7 +105,7 @@ export default function StudyPlanner() {
 
   const loadSubjects = async (studentId) => {
     try {
-      const res = await fetch(`/api/student/${studentId}/dashboard`);
+      const res = await fetch(`${API_BASE_URL}/api/student/${studentId}/dashboard`);
       if (res.ok) {
         const data = await res.json();
         if (data.enrolledSubjects && data.enrolledSubjects.length > 0) {
@@ -113,7 +114,7 @@ export default function StudyPlanner() {
           return;
         }
       }
-      const subRes = await fetch('/api/admin/subjects');
+      const subRes = await fetch(`${API_BASE_URL}/api/admin/subjects`);
       if (subRes.ok) {
         const subs = await subRes.json();
         setAvailableSubjects(subs);
@@ -126,7 +127,7 @@ export default function StudyPlanner() {
 
   const loadSavedPlans = async (studentId) => {
     try {
-      const res = await fetch(`/api/study-plans/student/${studentId}`);
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/student/${studentId}`);
       if (res.ok) {
         const plans = await res.json();
         setSavedPlans(plans);
@@ -141,7 +142,7 @@ export default function StudyPlanner() {
 
   const loadPlanDetails = async (planId) => {
     try {
-      const res = await fetch(`/api/study-plans/${planId}`);
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/${planId}`);
       if (res.ok) {
         const fullPlan = await res.json();
         setSelectedPlan(fullPlan);
@@ -201,7 +202,7 @@ export default function StudyPlanner() {
         customTopicsPrompt: customTopics.trim(),
       };
 
-      const res = await fetch('/api/study-plans/generate-ai', {
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/generate-ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -226,7 +227,7 @@ export default function StudyPlanner() {
     if (!generatedPlan) return;
     setIsSaving(true);
     try {
-      const res = await fetch('/api/study-plans', {
+      const res = await fetch(`${API_BASE_URL}/api/study-plans`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(generatedPlan),
@@ -251,7 +252,7 @@ export default function StudyPlanner() {
 
   const handleToggleTask = async (taskId) => {
     try {
-      const res = await fetch(`/api/study-plans/tasks/${taskId}/toggle`, {
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/tasks/${taskId}/toggle`, {
         method: 'PATCH',
       });
       if (res.ok) {
@@ -268,7 +269,7 @@ export default function StudyPlanner() {
   const handleDeletePlan = async () => {
     if (!deletePlanTarget) return;
     try {
-      const res = await fetch(`/api/study-plans/${deletePlanTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/${deletePlanTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Study plan deleted');
         setDeletePlanTarget(null);
@@ -291,7 +292,7 @@ export default function StudyPlanner() {
     }
 
     try {
-      const res = await fetch(`/api/study-plans/${selectedPlan.id}/tasks`, {
+      const res = await fetch(`${API_BASE_URL}/api/study-plans/${selectedPlan.id}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTaskData),

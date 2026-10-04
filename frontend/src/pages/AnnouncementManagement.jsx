@@ -17,6 +17,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Megaphone,
   Plus,
@@ -77,8 +78,8 @@ export default function AnnouncementManagement() {
     try {
       const url =
         currentUser.role === 'ADMIN'
-          ? '/api/announcements'
-          : `/api/announcements/author/${currentUser.id}`;
+          ? `${API_BASE_URL}/api/announcements`
+          : `${API_BASE_URL}/api/announcements/author/${currentUser.id}`;
       const res = await fetch(url);
       if (res.ok) {
         setAnnouncements(await res.json());
@@ -93,10 +94,10 @@ export default function AnnouncementManagement() {
   const loadSubjects = async (currentUser) => {
     try {
       if (currentUser.role === 'ADMIN') {
-        const res = await fetch('/api/admin/subjects');
+        const res = await fetch(`${API_BASE_URL}/api/admin/subjects`);
         if (res.ok) setSubjects(await res.json());
       } else {
-        const res = await fetch(`/api/teacher/${currentUser.id}/dashboard`);
+        const res = await fetch(`${API_BASE_URL}/api/teacher/${currentUser.id}/dashboard`);
         if (res.ok) {
           const data = await res.json();
           setSubjects(data.assignedSubjects || []);
@@ -123,13 +124,13 @@ export default function AnnouncementManagement() {
 
       let res;
       if (editingId) {
-        res = await fetch(`/api/announcements/${editingId}`, {
+        res = await fetch(`${API_BASE_URL}/api/announcements/${editingId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       } else {
-        res = await fetch('/api/announcements', {
+        res = await fetch(`${API_BASE_URL}/api/announcements`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -164,7 +165,7 @@ export default function AnnouncementManagement() {
 
   const handleTogglePublish = async (id) => {
     try {
-      const res = await fetch(`/api/announcements/${id}/publish`, { method: 'PATCH' });
+      const res = await fetch(`${API_BASE_URL}/api/announcements/${id}/publish`, { method: 'PATCH' });
       if (res.ok) {
         showSuccess('Publish status updated');
         loadAnnouncements(user);
@@ -177,7 +178,7 @@ export default function AnnouncementManagement() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/announcements/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/announcements/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Announcement removed');
         setDeleteTarget(null);

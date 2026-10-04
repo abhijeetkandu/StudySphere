@@ -14,6 +14,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   BrainCircuit,
   Sparkles,
@@ -60,7 +61,7 @@ export default function AIStudyAssistant() {
       else {
         setUser(parsedUser);
         loadConversations(parsedUser.id);
-        fetch('/api/admin/subjects')
+        fetch(`${API_BASE_URL}/api/admin/subjects`)
           .then((res) => res.json())
           .then(setSubjects)
           .catch(() => {});
@@ -76,7 +77,7 @@ export default function AIStudyAssistant() {
 
   const loadConversations = async (studentId) => {
     try {
-      const res = await fetch(`/api/ai/conversations/student/${studentId}`);
+      const res = await fetch(`${API_BASE_URL}/api/ai/conversations/student/${studentId}`);
       if (res.ok) {
         setConversations(await res.json());
       }
@@ -88,7 +89,7 @@ export default function AIStudyAssistant() {
   const loadMessages = async (convId) => {
     setActiveConvId(convId);
     try {
-      const res = await fetch(`/api/ai/conversations/${convId}/messages`);
+      const res = await fetch(`${API_BASE_URL}/api/ai/conversations/${convId}/messages`);
       if (res.ok) {
         setMessages(await res.json());
       }
@@ -107,7 +108,7 @@ export default function AIStudyAssistant() {
         ? `Chat: ${contextNotes}`
         : 'Study Discussion';
 
-      const res = await fetch('/api/ai/conversations', {
+      const res = await fetch(`${API_BASE_URL}/api/ai/conversations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -137,7 +138,7 @@ export default function AIStudyAssistant() {
     e.stopPropagation();
     if (!window.confirm('Delete this conversation?')) return;
     try {
-      const res = await fetch(`/api/ai/conversations/${convId}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/ai/conversations/${convId}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Conversation deleted');
         if (activeConvId === convId) {
@@ -162,7 +163,7 @@ export default function AIStudyAssistant() {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`/api/ai/conversations/${activeConvId}/chat`, {
+      const res = await fetch(`${API_BASE_URL}/api/ai/conversations/${activeConvId}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: sendText }),

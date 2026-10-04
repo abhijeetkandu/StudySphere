@@ -16,6 +16,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Bell,
   Clock,
@@ -78,7 +79,7 @@ export default function Reminders() {
   const loadReminders = async (userId) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/reminders/user/${userId}`);
+      const res = await fetch(`${API_BASE_URL}/api/reminders/user/${userId}`);
       if (res.ok) {
         const data = await res.json();
         setRemindersData(data);
@@ -109,7 +110,7 @@ export default function Reminders() {
     }
 
     try {
-      const res = await fetch('/api/reminders', {
+      const res = await fetch(`${API_BASE_URL}/api/reminders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,7 +139,7 @@ export default function Reminders() {
 
   const handleToggleCompletion = async (reminderId) => {
     try {
-      const res = await fetch(`/api/reminders/${reminderId}/toggle`, {
+      const res = await fetch(`${API_BASE_URL}/api/reminders/${reminderId}/toggle`, {
         method: 'PATCH',
       });
       if (res.ok) {
@@ -160,7 +161,7 @@ export default function Reminders() {
     }
 
     try {
-      const res = await fetch(`/api/reminders/${editingReminder.id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/reminders/${editingReminder.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -187,7 +188,7 @@ export default function Reminders() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/reminders/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/reminders/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Reminder deleted');
         setDeleteTarget(null);

@@ -19,6 +19,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -96,11 +97,11 @@ export default function AcademicCalendar() {
   const loadEvents = async (currentUser) => {
     setLoading(true);
     try {
-      let url = '/api/calendar';
+      let url = `${API_BASE_URL}/api/calendar`;
       if (currentUser.role === 'STUDENT') {
-        url = `/api/calendar/student/${currentUser.id}`;
+        url = `${API_BASE_URL}/api/calendar/student/${currentUser.id}`;
       } else if (currentUser.role === 'TEACHER') {
-        url = `/api/calendar/teacher/${currentUser.id}`;
+        url = `${API_BASE_URL}/api/calendar/teacher/${currentUser.id}`;
       }
       const res = await fetch(url);
       if (res.ok) {
@@ -117,8 +118,8 @@ export default function AcademicCalendar() {
     if (currentUser.role === 'ADMIN' || currentUser.role === 'TEACHER') {
       try {
         const [cRes, sRes] = await Promise.all([
-          fetch('/api/admin/courses'),
-          fetch('/api/admin/semesters'),
+          fetch(`${API_BASE_URL}/api/admin/courses`),
+          fetch(`${API_BASE_URL}/api/admin/semesters`),
         ]);
         if (cRes.ok) setCourses(await cRes.json());
         if (sRes.ok) setSemesters(await sRes.json());
@@ -154,13 +155,13 @@ export default function AcademicCalendar() {
 
       let res;
       if (editingId) {
-        res = await fetch(`/api/calendar/${editingId}`, {
+        res = await fetch(`${API_BASE_URL}/api/calendar/${editingId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       } else {
-        res = await fetch('/api/calendar', {
+        res = await fetch(`${API_BASE_URL}/api/calendar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -184,7 +185,7 @@ export default function AcademicCalendar() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/calendar/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/calendar/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Calendar event removed');
         setDeleteTarget(null);

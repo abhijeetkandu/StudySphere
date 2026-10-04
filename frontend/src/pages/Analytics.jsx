@@ -17,6 +17,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   BarChart3,
   Trophy,
@@ -82,7 +83,7 @@ export default function Analytics() {
       }
 
       if (endpoint) {
-        const res = await fetch(endpoint);
+        const res = await fetch(`${API_BASE_URL}${endpoint}`);
         if (res.ok) {
           const data = await res.json();
           setAnalyticsData(data);

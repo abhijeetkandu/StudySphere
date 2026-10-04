@@ -19,6 +19,7 @@ import {
   Avatar,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Gamepad2,
   Trophy,
@@ -85,14 +86,14 @@ export default function QuizGame() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('/api/admin/courses').then((res) => res.json()).then(setCourses).catch(() => {});
-    fetch('/api/admin/semesters').then((res) => res.json()).then(setSemesters).catch(() => {});
-    fetch('/api/admin/subjects').then((res) => res.json()).then(setSubjects).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/courses`).then((res) => res.json()).then(setCourses).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/semesters`).then((res) => res.json()).then(setSemesters).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/subjects`).then((res) => res.json()).then(setSubjects).catch(() => {});
   }, []);
 
   useEffect(() => {
     if (selectedSubject) {
-      fetch(`/api/quizzes/subject/${selectedSubject}/published`)
+      fetch(`${API_BASE_URL}/api/quizzes/subject/${selectedSubject}/published`)
         .then((res) => res.json())
         .then(setQuizzes)
         .catch(() => showError('Failed to load subject quizzes'));
@@ -114,7 +115,7 @@ export default function QuizGame() {
 
   const startQuiz = async (quiz) => {
     try {
-      const res = await fetch(`/api/quizzes/${quiz.id}/questions`);
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${quiz.id}/questions`);
       if (res.ok) {
         const data = await res.json();
         if (data.length === 0) {
@@ -185,7 +186,7 @@ export default function QuizGame() {
     } catch {}
 
     try {
-      await fetch(`/api/quizzes/${activeQuiz.id}/attempt`, {
+      await fetch(`${API_BASE_URL}/api/quizzes/${activeQuiz.id}/attempt`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -197,7 +198,7 @@ export default function QuizGame() {
         }),
       });
 
-      const res = await fetch(`/api/quizzes/${activeQuiz.id}/leaderboard`);
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${activeQuiz.id}/leaderboard`);
       if (res.ok) setLeaderboard(await res.json());
     } catch (err) {
       console.error('Error submitting quiz attempt', err);

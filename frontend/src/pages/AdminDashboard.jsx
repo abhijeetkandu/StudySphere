@@ -43,6 +43,7 @@ import PageHeader from '../components/common/PageHeader';
 import StatCard from '../components/common/StatCard';
 import ConfirmDialog from '../components/common/ConfirmDialog';
 import EmptyState from '../components/common/EmptyState';
+import { API_BASE_URL } from '../config/api';
 import { useNotification } from '../context/NotificationContext';
 import Analytics from './Analytics';
 import AnnouncementManagement from './AnnouncementManagement';
@@ -76,13 +77,13 @@ export default function AdminDashboard() {
   const fetchSummaryCounts = async () => {
     try {
       const [colRes, deptRes, crsRes, semRes, subRes, stuRes, tchRes] = await Promise.all([
-        fetch('/api/admin/colleges'),
-        fetch('/api/admin/departments'),
-        fetch('/api/admin/courses'),
-        fetch('/api/admin/semesters'),
-        fetch('/api/admin/subjects'),
-        fetch('/api/admin/users?role=STUDENT'),
-        fetch('/api/admin/users?role=TEACHER'),
+        fetch(`${API_BASE_URL}/api/admin/colleges`),
+        fetch(`${API_BASE_URL}/api/admin/departments`),
+        fetch(`${API_BASE_URL}/api/admin/courses`),
+        fetch(`${API_BASE_URL}/api/admin/semesters`),
+        fetch(`${API_BASE_URL}/api/admin/subjects`),
+        fetch(`${API_BASE_URL}/api/admin/users?role=STUDENT`),
+        fetch(`${API_BASE_URL}/api/admin/users?role=TEACHER`),
       ]);
 
       setCounts({
@@ -212,7 +213,7 @@ function AdminColleges({ onUpdate }) {
   const { showSuccess, showError } = useNotification();
 
   const fetchColleges = () => {
-    fetch('/api/admin/colleges')
+    fetch(`${API_BASE_URL}/api/admin/colleges`)
       .then((res) => res.json())
       .then(setColleges)
       .catch(() => showError('Failed to load colleges'));
@@ -225,7 +226,7 @@ function AdminColleges({ onUpdate }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/colleges', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/colleges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), location: location.trim() }),
@@ -248,7 +249,7 @@ function AdminColleges({ onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/colleges/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/colleges/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('College deleted');
         setDeleteTarget(null);
@@ -360,8 +361,8 @@ function AdminDepartments({ onUpdate }) {
   const fetchData = async () => {
     try {
       const [deptRes, colRes] = await Promise.all([
-        fetch('/api/admin/departments'),
-        fetch('/api/admin/colleges'),
+        fetch(`${API_BASE_URL}/api/admin/departments`),
+        fetch(`${API_BASE_URL}/api/admin/colleges`),
       ]);
       if (deptRes.ok) setDepartments(await deptRes.json());
       if (colRes.ok) {
@@ -381,7 +382,7 @@ function AdminDepartments({ onUpdate }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/departments', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/departments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), college: { id: collegeId } }),
@@ -403,7 +404,7 @@ function AdminDepartments({ onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/departments/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/departments/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Department deleted');
         setDeleteTarget(null);
@@ -525,8 +526,8 @@ function AdminCourses({ onUpdate }) {
   const fetchData = async () => {
     try {
       const [crsRes, deptRes] = await Promise.all([
-        fetch('/api/admin/courses'),
-        fetch('/api/admin/departments'),
+        fetch(`${API_BASE_URL}/api/admin/courses`),
+        fetch(`${API_BASE_URL}/api/admin/departments`),
       ]);
       if (crsRes.ok) setCourses(await crsRes.json());
       if (deptRes.ok) {
@@ -546,7 +547,7 @@ function AdminCourses({ onUpdate }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/courses', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/courses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), duration: duration.trim(), department: { id: departmentId } }),
@@ -569,7 +570,7 @@ function AdminCourses({ onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/courses/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/courses/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Course deleted');
         setDeleteTarget(null);
@@ -692,8 +693,8 @@ function AdminSemesters({ onUpdate }) {
   const fetchData = async () => {
     try {
       const [semRes, crsRes] = await Promise.all([
-        fetch('/api/admin/semesters'),
-        fetch('/api/admin/courses'),
+        fetch(`${API_BASE_URL}/api/admin/semesters`),
+        fetch(`${API_BASE_URL}/api/admin/courses`),
       ]);
       if (semRes.ok) setSemesters(await semRes.json());
       if (crsRes.ok) {
@@ -713,7 +714,7 @@ function AdminSemesters({ onUpdate }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/semesters', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/semesters`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ number: parseInt(number), course: { id: courseId } }),
@@ -735,7 +736,7 @@ function AdminSemesters({ onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/semesters/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/semesters/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Semester deleted');
         setDeleteTarget(null);
@@ -844,8 +845,8 @@ function AdminSubjects({ onUpdate }) {
   const fetchData = async () => {
     try {
       const [subRes, semRes] = await Promise.all([
-        fetch('/api/admin/subjects'),
-        fetch('/api/admin/semesters'),
+        fetch(`${API_BASE_URL}/api/admin/subjects`),
+        fetch(`${API_BASE_URL}/api/admin/semesters`),
       ]);
       if (subRes.ok) setSubjects(await subRes.json());
       if (semRes.ok) {
@@ -865,7 +866,7 @@ function AdminSubjects({ onUpdate }) {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/subjects', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/subjects`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), code: code.trim(), semester: { id: semesterId } }),
@@ -888,7 +889,7 @@ function AdminSubjects({ onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/subjects/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/subjects/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Subject deleted');
         setDeleteTarget(null);
@@ -1017,7 +1018,7 @@ function AdminUsers({ role, onUpdate }) {
   const { showSuccess, showError } = useNotification();
 
   const fetchUsers = () => {
-    fetch(`/api/admin/users?role=${role}`)
+    fetch(`${API_BASE_URL}/api/admin/users?role=${role}`)
       .then((res) => res.json())
       .then(setUsers)
       .catch(() => showError(`Failed to load ${role}s`));
@@ -1037,7 +1038,7 @@ function AdminUsers({ role, onUpdate }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/admin/teachers', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/teachers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1068,7 +1069,7 @@ function AdminUsers({ role, onUpdate }) {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/admin/users/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess(`${role} record deleted`);
         setDeleteTarget(null);

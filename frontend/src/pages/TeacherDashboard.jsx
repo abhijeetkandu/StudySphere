@@ -11,6 +11,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   GraduationCap,
   BookOpen,
@@ -67,10 +68,10 @@ export default function TeacherDashboard() {
     setLoading(true);
     try {
       const [dashRes, remRes, annRes, calRes] = await Promise.all([
-        fetch(`/api/teacher/${userId}/dashboard`),
-        fetch(`/api/reminders/user/${userId}`),
-        fetch(`/api/announcements/user/${userId}`),
-        fetch(`/api/calendar/upcoming/${userId}?limit=3`),
+        fetch(`${API_BASE_URL}/api/teacher/${userId}/dashboard`),
+        fetch(`${API_BASE_URL}/api/reminders/user/${userId}`),
+        fetch(`${API_BASE_URL}/api/announcements/user/${userId}`),
+        fetch(`${API_BASE_URL}/api/calendar/upcoming/${userId}?limit=3`),
       ]);
 
       if (dashRes.ok) setDashboardData(await dashRes.json());
@@ -86,9 +87,9 @@ export default function TeacherDashboard() {
 
   const handleToggleReminder = async (remId) => {
     try {
-      const res = await fetch(`/api/reminders/${remId}/toggle`, { method: 'PATCH' });
+      const res = await fetch(`${API_BASE_URL}/api/reminders/${remId}/toggle`, { method: 'PATCH' });
       if (res.ok && user) {
-        const remRes = await fetch(`/api/reminders/user/${user.id}`);
+        const remRes = await fetch(`${API_BASE_URL}/api/reminders/user/${user.id}`);
         if (remRes.ok) setReminders(await remRes.json());
       }
     } catch (err) {

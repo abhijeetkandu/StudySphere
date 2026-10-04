@@ -17,6 +17,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Layers,
   Sparkles,
@@ -72,7 +73,7 @@ export default function Flashcards() {
       if (parsedUser.role !== 'STUDENT') navigate('/');
       else {
         setUser(parsedUser);
-        fetch('/api/admin/subjects')
+        fetch(`${API_BASE_URL}/api/admin/subjects`)
           .then((res) => res.json())
           .then((data) => {
             setSubjects(data);
@@ -88,7 +89,7 @@ export default function Flashcards() {
   const loadFlashcards = async (subId) => {
     if (!subId || !user) return;
     try {
-      const res = await fetch(`/api/flashcards/student/${user.id}/subject/${subId}`);
+      const res = await fetch(`${API_BASE_URL}/api/flashcards/student/${user.id}/subject/${subId}`);
       if (res.ok) {
         const data = await res.json();
         setFlashcards(data);
@@ -109,7 +110,7 @@ export default function Flashcards() {
   const handleToggleKnown = async (cardId, e) => {
     e?.stopPropagation();
     try {
-      const res = await fetch(`/api/flashcards/${cardId}/toggle-known`, {
+      const res = await fetch(`${API_BASE_URL}/api/flashcards/${cardId}/toggle-known`, {
         method: 'PATCH',
       });
       if (res.ok) {
@@ -125,7 +126,7 @@ export default function Flashcards() {
   const handleManualAdd = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/flashcards', {
+      const res = await fetch(`${API_BASE_URL}/api/flashcards`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -156,7 +157,7 @@ export default function Flashcards() {
 
     setIsGenerating(true);
     try {
-      const res = await fetch('/api/flashcards/generate-ai', {
+      const res = await fetch(`${API_BASE_URL}/api/flashcards/generate-ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -186,7 +187,7 @@ export default function Flashcards() {
   const handleDeleteCard = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/flashcards/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/flashcards/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Flashcard removed');
         setDeleteTarget(null);

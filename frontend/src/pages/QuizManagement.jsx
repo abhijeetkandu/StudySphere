@@ -27,6 +27,7 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Gamepad2,
   Sparkles,
@@ -101,9 +102,9 @@ export default function QuizManagement() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('/api/admin/courses').then((res) => res.json()).then(setCourses).catch(() => {});
-    fetch('/api/admin/semesters').then((res) => res.json()).then(setSemesters).catch(() => {});
-    fetch('/api/admin/subjects').then((res) => res.json()).then(setSubjects).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/courses`).then((res) => res.json()).then(setCourses).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/semesters`).then((res) => res.json()).then(setSemesters).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/subjects`).then((res) => res.json()).then(setSubjects).catch(() => {});
   }, []);
 
   const loadQuizzes = (subId) => {
@@ -111,7 +112,7 @@ export default function QuizManagement() {
       setQuizzes([]);
       return;
     }
-    fetch(`/api/quizzes/subject/${subId}`)
+    fetch(`${API_BASE_URL}/api/quizzes/subject/${subId}`)
       .then((res) => res.json())
       .then(setQuizzes)
       .catch(() => showError('Failed to load quizzes'));
@@ -125,7 +126,7 @@ export default function QuizManagement() {
     e.preventDefault();
     if (!quizTitle.trim() || !selectedSubject) return;
     try {
-      const res = await fetch('/api/quizzes', {
+      const res = await fetch(`${API_BASE_URL}/api/quizzes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: quizTitle.trim(), subjectId: selectedSubject, teacherId: user.id }),
@@ -146,7 +147,7 @@ export default function QuizManagement() {
     e.preventDefault();
     if (!selectedQuiz) return;
     try {
-      const res = await fetch(`/api/quizzes/${selectedQuiz.id}/questions`, {
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${selectedQuiz.id}/questions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(questionData),
@@ -166,7 +167,7 @@ export default function QuizManagement() {
 
   const togglePublish = async (quiz) => {
     try {
-      const res = await fetch(`/api/quizzes/${quiz.id}/publish`, {
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${quiz.id}/publish`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isPublished: !quiz.isPublished }),
@@ -185,7 +186,7 @@ export default function QuizManagement() {
   const handleDeleteQuiz = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/quizzes/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Quiz deleted');
         setDeleteTarget(null);
@@ -200,7 +201,7 @@ export default function QuizManagement() {
 
   const viewLeaderboard = async (quiz) => {
     try {
-      const res = await fetch(`/api/quizzes/${quiz.id}/leaderboard`);
+      const res = await fetch(`${API_BASE_URL}/api/quizzes/${quiz.id}/leaderboard`);
       if (res.ok) {
         const data = await res.json();
         setLeaderboard(data);
@@ -220,7 +221,7 @@ export default function QuizManagement() {
     }
     setIsGenerating(true);
     try {
-      const res = await fetch('/api/ai/quiz/generate', {
+      const res = await fetch(`${API_BASE_URL}/api/ai/quiz/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: aiTopic, difficulty: aiDifficulty, numQuestions: aiNumQuestions }),
@@ -252,7 +253,7 @@ export default function QuizManagement() {
   const handleSaveAIQuiz = async () => {
     if (generatedQuestions.length === 0) return;
     try {
-      const quizRes = await fetch('/api/quizzes', {
+      const quizRes = await fetch(`${API_BASE_URL}/api/quizzes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -265,7 +266,7 @@ export default function QuizManagement() {
       if (quizRes.ok) {
         const quizData = await quizRes.json();
         for (const q of generatedQuestions) {
-          await fetch(`/api/quizzes/${quizData.id}/questions`, {
+          await fetch(`${API_BASE_URL}/api/quizzes/${quizData.id}/questions`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(q),

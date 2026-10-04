@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import { Eye, EyeOff, GraduationCap, UserPlus } from 'lucide-react';
 import { useAppTheme } from '../context/ThemeContext';
 import StudySphereLogo from '../components/common/StudySphereLogo';
@@ -43,7 +44,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),

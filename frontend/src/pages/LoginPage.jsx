@@ -17,6 +17,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import { GoogleLogin } from '@react-oauth/google';
 import { Eye, EyeOff, BookOpen, BrainCircuit, Gamepad2, GraduationCap, School, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -65,7 +66,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password }),
@@ -389,7 +390,7 @@ export default function LoginPage() {
                   onSuccess={async (credentialResponse) => {
                     setError('');
                     try {
-                      const response = await fetch('/api/auth/google', {
+                      const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ credential: credentialResponse.credential }),

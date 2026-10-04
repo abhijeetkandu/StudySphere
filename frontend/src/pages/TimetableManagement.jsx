@@ -18,6 +18,7 @@ import {
   Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import {
   Clock,
   Plus,
@@ -79,10 +80,10 @@ export default function TimetableManagement() {
   }, [navigate]);
 
   useEffect(() => {
-    fetch('/api/admin/courses').then((res) => res.json()).then(setCourses).catch(() => {});
-    fetch('/api/admin/semesters').then((res) => res.json()).then(setSemesters).catch(() => {});
-    fetch('/api/admin/subjects').then((res) => res.json()).then(setSubjects).catch(() => {});
-    fetch('/api/admin/users?role=TEACHER').then((res) => res.json()).then(setTeachers).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/courses`).then((res) => res.json()).then(setCourses).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/semesters`).then((res) => res.json()).then(setSemesters).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/subjects`).then((res) => res.json()).then(setSubjects).catch(() => {});
+    fetch(`${API_BASE_URL}/api/admin/users?role=TEACHER`).then((res) => res.json()).then(setTeachers).catch(() => {});
   }, []);
 
   const loadTimetables = (crsId, semId) => {
@@ -90,7 +91,7 @@ export default function TimetableManagement() {
       setTimetables([]);
       return;
     }
-    fetch(`/api/timetables/course/${crsId}/semester/${semId}`)
+    fetch(`${API_BASE_URL}/api/timetables/course/${crsId}/semester/${semId}`)
       .then((res) => res.json())
       .then(setTimetables)
       .catch(() => showError('Failed to load timetables'));
@@ -103,7 +104,7 @@ export default function TimetableManagement() {
   const handleAddTimetable = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/timetables', {
+      const res = await fetch(`${API_BASE_URL}/api/timetables`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -125,7 +126,7 @@ export default function TimetableManagement() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/timetables/${deleteTarget.id}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE_URL}/api/timetables/${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showSuccess('Schedule slot deleted');
         setDeleteTarget(null);
