@@ -1,0 +1,33 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="0.8" cy="0.2" r="0.8">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect width="48" height="48" rx="14" fill="url(#bgGrad)" />
+  <rect width="48" height="48" rx="14" fill="url(#glowGrad)" />
+
+  <!-- Orbital Sphere Ring -->
+  <ellipse cx="24" cy="24" rx="19.5" ry="8" transform="rotate(-25 24 24)" stroke="#ffffff" stroke-width="2.5" stroke-opacity="0.5" stroke-dasharray="3 2" />
+
+  <!-- Academic Graduation Cap / Crest -->
+  <path d="M24 7L40.5 16L24 25L7.5 16L24 7Z" fill="#ffffff" />
+  
+  <!-- Base Pedestal -->
+  <path d="M13.5 20V29.5C13.5 34.5 18.2 38.5 24 38.5C29.8 38.5 34.5 34.5 34.5 29.5V20L24 25.8L13.5 20Z" fill="#ffffff" fill-opacity="0.85" />
+  
+  <!-- Tassel -->
+  <path d="M37.5 17.5V28C37.5 29 36.2 30 35.2 29.5" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+
+  <!-- AI Spark in Core -->
+  <path d="M24 12L25.8 16.2L30 18L25.8 19.8L24 24L22.2 19.8L18 18L22.2 16.2L24 12Z" fill="#38bdf8" />
+  <circle cx="24" cy="18" r="1.8" fill="#ffffff" />
+</svg>
