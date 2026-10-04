@@ -71,7 +71,7 @@ export default function AIStudyAssistant() {
   }, [navigate]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [messages, isTyping]);
 
   const loadConversations = async (studentId) => {
@@ -205,9 +205,9 @@ export default function AIStudyAssistant() {
       {/* Main Chat Shell */}
       <Card
         sx={{
-          height: 'calc(100vh - 190px)',
-          minHeight: 520,
-          maxHeight: 'calc(100vh - 190px)',
+          height: { xs: 'calc(100dvh - 220px)', sm: 'calc(100dvh - 240px)', md: 'calc(100vh - 210px)' },
+          minHeight: { xs: 440, sm: 480, md: 520 },
+          maxHeight: { xs: 'calc(100dvh - 200px)', sm: 'calc(100dvh - 220px)', md: 'calc(100vh - 190px)' },
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '300px 1fr' },
           borderRadius: '20px',
@@ -536,19 +536,55 @@ export default function AIStudyAssistant() {
               </Box>
 
               {/* Chat Input Bar */}
-              <Box sx={{ p: 2, bgcolor: 'background.paper', borderTop: '1px solid', borderColor: 'divider', flexShrink: 0 }}>
-                <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '10px' }}>
+              <Box
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  bgcolor: 'background.paper',
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                  flexShrink: 0,
+                  position: 'sticky',
+                  bottom: 0,
+                  zIndex: 2,
+                }}
+              >
+                <form
+                  onSubmit={handleSendMessage}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    gap: '10px',
+                    width: '100%',
+                  }}
+                >
                   <TextField
-                    placeholder="Ask a question, request an explanation, or paste code..."
+                    placeholder="Ask a question, request an explanation, or paste code... (Enter to send, Shift+Enter for new line)"
                     fullWidth
+                    multiline
+                    minRows={1}
+                    maxRows={5}
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage(e);
+                      }
+                    }}
                     disabled={isTyping}
                     size="small"
                     sx={{
+                      flex: 1,
                       '& .MuiOutlinedInput-root': {
-                        borderRadius: '24px',
+                        borderRadius: '16px',
                         bgcolor: 'action.hover',
+                        py: '8px',
+                        px: 1.5,
+                        fontSize: '0.92rem',
+                        '& textarea': {
+                          maxHeight: '120px',
+                          overflowY: 'auto !important',
+                        },
                       },
                     }}
                   />
@@ -557,14 +593,23 @@ export default function AIStudyAssistant() {
                     variant="contained"
                     disabled={isTyping || !inputText.trim()}
                     sx={{
-                      borderRadius: '24px',
-                      px: 3,
+                      borderRadius: '16px',
+                      px: { xs: 2, sm: 3 },
+                      height: 40,
                       fontWeight: 700,
-                      minWidth: 100,
+                      minWidth: { xs: 48, sm: 90 },
+                      flexShrink: 0,
                       background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 1,
                     }}
                   >
                     <Send size={18} />
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                      Send
+                    </Box>
                   </Button>
                 </form>
               </Box>
