@@ -206,9 +206,8 @@ export default function AIStudyAssistant() {
       {/* Main Chat Shell */}
       <Card
         sx={{
-          height: { xs: 'calc(100dvh - 220px)', sm: 'calc(100dvh - 240px)', md: 'calc(100vh - 210px)' },
-          minHeight: { xs: 440, sm: 480, md: 520 },
-          maxHeight: { xs: 'calc(100dvh - 200px)', sm: 'calc(100dvh - 220px)', md: 'calc(100vh - 190px)' },
+          height: { xs: 'auto', md: 'calc(100vh - 210px)' },
+          minHeight: { xs: 520, md: 560 },
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '300px 1fr' },
           borderRadius: '20px',
@@ -227,7 +226,7 @@ export default function AIStudyAssistant() {
             borderRight: '1px solid',
             borderColor: 'divider',
             height: '100%',
-            minHeight: 0,
+            minHeight: { xs: 200, md: 0 },
             overflow: 'hidden',
           }}
         >
@@ -329,81 +328,97 @@ export default function AIStudyAssistant() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                p: { xs: 3, sm: 6 },
+                justifyContent: 'flex-start',
+                p: { xs: 2.5, sm: 4, md: 5 },
                 textAlign: 'center',
                 overflowY: 'auto',
+                minHeight: 0,
+                width: '100%',
               }}
             >
               <Box
                 sx={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: '24px',
-                  background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                  my: 'auto',
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  mb: 2.5,
-                  boxShadow: '0 10px 25px rgba(99, 102, 241, 0.3)',
+                  width: '100%',
+                  maxWidth: 540,
+                  py: 2,
                 }}
               >
-                <BrainCircuit size={36} />
-              </Box>
+                <Box
+                  sx={{
+                    width: 68,
+                    height: 68,
+                    borderRadius: '22px',
+                    background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    mb: 2,
+                    boxShadow: '0 10px 25px rgba(99, 102, 241, 0.3)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <BrainCircuit size={34} />
+                </Box>
 
-              <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-                StudySphere AI Tutor
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 500, mb: 4 }}>
-                Ask anything about your syllabus, lecture notes, formula derivations, or coding problems.
-              </Typography>
-
-              {/* Start Form */}
-              <Card sx={{ p: 3, maxWidth: 500, width: '100%', borderRadius: '16px', textAlign: 'left' }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 2 }}>
-                  Set Study Context (Optional)
+                <Typography variant="h4" sx={{ fontWeight: 800, mb: 1, fontSize: { xs: '1.5rem', sm: '2rem' } }}>
+                  StudySphere AI Tutor
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 500, mb: 3.5, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                  Ask anything about your syllabus, lecture notes, formula derivations, or coding problems.
                 </Typography>
 
-                <form onSubmit={handleNewChat} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                  <TextField
-                    select
-                    label="Subject Context"
-                    fullWidth
-                    value={selectedSubject}
-                    onChange={(e) => setSelectedSubject(e.target.value)}
-                  >
-                    <MenuItem value="">-- General Knowledge / Multidisciplinary --</MenuItem>
-                    {subjects.map((s) => (
-                      <MenuItem key={s.id} value={s.id}>
-                        {s.name} ({s.code})
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                {/* Start Form */}
+                <Card sx={{ p: { xs: 2.5, sm: 3 }, maxWidth: 500, width: '100%', borderRadius: '16px', textAlign: 'left', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 2 }}>
+                    Set Study Context (Optional)
+                  </Typography>
 
-                  <TextField
-                    label="Specific Chapter / Topic Focus"
-                    fullWidth
-                    placeholder="e.g. Asymptotic Notations & Big-O"
-                    value={contextNotes}
-                    onChange={(e) => setContextNotes(e.target.value)}
-                  />
+                  <form onSubmit={handleNewChat} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                    <TextField
+                      select
+                      label="Subject Context"
+                      fullWidth
+                      value={selectedSubject}
+                      onChange={(e) => setSelectedSubject(e.target.value)}
+                    >
+                      <MenuItem value="">-- General Knowledge / Multidisciplinary --</MenuItem>
+                      {subjects.map((s) => (
+                        <MenuItem key={s.id} value={s.id}>
+                          {s.name} ({s.code})
+                        </MenuItem>
+                      ))}
+                    </TextField>
 
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    size="large"
-                    startIcon={<Sparkles size={18} />}
-                    sx={{
-                      fontWeight: 700,
-                      py: 1.2,
-                      background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
-                    }}
-                  >
-                    Start AI Session
-                  </Button>
-                </form>
-              </Card>
+                    <TextField
+                      label="Specific Chapter / Topic Focus"
+                      fullWidth
+                      placeholder="e.g. Asymptotic Notations & Big-O"
+                      value={contextNotes}
+                      onChange={(e) => setContextNotes(e.target.value)}
+                    />
+
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      startIcon={<Sparkles size={18} />}
+                      sx={{
+                        fontWeight: 700,
+                        py: 1.3,
+                        background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                        boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                      }}
+                    >
+                      Start AI Session
+                    </Button>
+                  </form>
+                </Card>
+              </Box>
             </Box>
           ) : (
             /* Active Chat Stream */
