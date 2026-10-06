@@ -356,71 +356,6 @@ public class GeminiService {
         return generateFallbackStudyPlan(examDate, hours, prefTime, subjectTopicsList, prioritySubjects, targetTitle);
     }
 
-    public List<Map<String, String>> generateFlashcards(String subject, String chapter, String topic, int count, String difficulty, String customFocus) {
-        int targetCount = (count > 0 && count <= 30) ? count : 10;
-        String diff = (difficulty != null && !difficulty.isBlank()) ? difficulty : "Medium";
-        
-        StringBuilder context = new StringBuilder();
-        if (subject != null && !subject.isBlank()) context.append("Subject: ").append(subject).append(". ");
-        if (chapter != null && !chapter.isBlank()) context.append("Chapter: ").append(chapter).append(". ");
-        if (topic != null && !topic.isBlank()) context.append("Topic: ").append(topic).append(". ");
-        if (customFocus != null && !customFocus.isBlank()) context.append("Key Focus/Keywords: ").append(customFocus).append(". ");
-
-        String prompt = String.format(
-            "You are an expert academic professor. Generate exactly %d high-yield educational flashcards for a college student on '%s' at '%s' difficulty level.\n" +
-            "Rules:\n" +
-            "1. 'front' should be a concise question, formula, key concept, or problem statement.\n" +
-            "2. 'back' should be a clear, accurate, and comprehensive explanation or solution with key takeaways.\n" +
-            "3. You MUST respond ONLY with a valid JSON array of objects. Do not include markdown code block formatting or extra commentary.\n" +
-            "Each object must have the exact keys 'front' and 'back'.\n" +
-            "Example format:\n" +
-            "[\n" +
-            "  {\n" +
-            "    \"front\": \"What is Dijkstra's algorithm used for?\",\n" +
-            "    \"back\": \"Finding the shortest paths between nodes in a weighted graph with non-negative edge weights.\"\n" +
-            "  }\n" +
-            "]",
-            targetCount, context.toString(), diff
-        );
-
-        String apiKey = resolveApiKey();
-        if (apiKey.isEmpty()) {
-            System.err.println("Warning: GEMINI_API_KEY is not configured, falling back to algorithmic card generator.");
-            return generateFallbackFlashcards(subject, chapter, topic, targetCount, customFocus);
-        }
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("systemInstruction", Map.of(
-            "parts", List.of(Map.of("text", "You are a JSON-only API that outputs educational flashcards. Output only valid JSON without markdown fences."))
-        ));
-
-        List<Map<String, Object>> contents = new ArrayList<>();
-        contents.add(Map.of(
-            "role", "user",
-            "parts", List.of(Map.of("text", prompt))
-        ));
-        requestBody.put("contents", contents);
-
-        Map<String, Object> genConfig = new HashMap<>();
-        genConfig.put("temperature", 0.7);
-        genConfig.put("maxOutputTokens", 3000);
-        genConfig.put("responseMimeType", "application/json");
-        requestBody.put("generationConfig", genConfig);
-
-        try {
-            String text = callGemini(requestBody, apiKey);
-            String cleaned = cleanJsonContent(text);
-            List<Map<String, String>> parsed = objectMapper.readValue(cleaned, objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class));
-            if (parsed != null && !parsed.isEmpty()) {
-                return parsed;
-            }
-        } catch (Exception e) {
-            System.err.println("Gemini flashcards API call failed: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-        }
-
-        return generateFallbackFlashcards(subject, chapter, topic, targetCount, customFocus);
-    }
-
     private String cleanJsonContent(String content) {
         if (content == null) return "{}";
         content = content.trim();
@@ -594,40 +529,5 @@ public class GeminiService {
 
         result.put("tasks", tasks);
         return result;
-    }
-
-    private List<Map<String, String>> generateFallbackFlashcards(String subject, String chapter, String topic, int count, String customFocus) {
-        String mainTopic = (topic != null && !topic.isBlank()) ? topic : ((chapter != null && !chapter.isBlank()) ? chapter : ((subject != null && !subject.isBlank()) ? subject : "Core Concepts"));
-        String subName = (subject != null && !subject.isBlank()) ? subject : "General Studies";
-
-        List<Map<String, String>> cards = new ArrayList<>();
-
-        String[][] templatePatterns = {
-            {"What is the fundamental definition and core principle of %s in %s?", "%s refers to the foundational principle governing this area. Key aspects include standard definitions, core mechanisms, and primary real-world use cases."},
-            {"What are the primary components or building blocks of %s?", "The main building blocks include structural elements, operational workflows, inputs, transformation rules, and output states essential for system functioning."},
-            {"What are the key advantages and practical benefits of applying %s?", "Key benefits include improved computational efficiency, modularity, reliability, scalability, and simplified maintainability in production environments."},
-            {"What common challenges or trade-offs arise when working with %s?", "Common trade-offs involve time vs. space complexity, implementation overhead, synchronization constraints, and resource allocation trade-offs."},
-            {"How does %s compare and contrast with alternative approaches?", "%s provides specialized optimization for specific constraints, whereas alternative methods may prioritize simplicity or lower upfront resource demands."},
-            {"What is the step-by-step process/algorithm used to execute %s?", "1. Initialization of variables and states.\n2. Iterative processing according to rules.\n3. Validation of boundary conditions.\n4. Final state convergence and output return."},
-            {"What are the critical formulas, theorems, or laws associated with %s?", "Standard governing equations, theoretical bounds (e.g. Big-O complexities), and invariant conditions that must hold true during execution."},
-            {"How do you troubleshoot or debug common errors in %s?", "Verify input pre-conditions, check boundary/edge cases (e.g., null pointers, division by zero, empty collections), and trace intermediate states step-by-step."},
-            {"What are real-world industry applications of %s?", "Widely used in distributed systems, backend architectures, database indexing, networking protocols, and modern web application development."},
-            {"What are best practices for optimizing performance in %s?", "Employ efficient data structures, minimize redundant computations (caching/memoization), ensure proper indexing, and avoid unnecessary lock contention."}
-        };
-
-        for (int i = 0; i < count; i++) {
-            String[] t = templatePatterns[i % templatePatterns.length];
-            String front = String.format(t[0], mainTopic, subName);
-            String back = String.format(t[1], mainTopic);
-            
-            if (customFocus != null && !customFocus.isBlank() && i == 0) {
-                front = "Key Concept: " + customFocus + " (" + mainTopic + ")";
-                back = "Core focus on " + customFocus + ": Essential definitions, rules, problem-solving techniques, and exam review notes.";
-            }
-
-            cards.add(Map.of("front", front, "back", back));
-        }
-
-        return cards;
     }
 }

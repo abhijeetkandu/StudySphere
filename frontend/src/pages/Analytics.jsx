@@ -25,7 +25,6 @@ import {
   Clock,
   BookOpen,
   AlertTriangle,
-  Layers,
   Sparkles,
   Gamepad2,
   Users,
@@ -127,7 +126,7 @@ export default function Analytics() {
         <EmptyState
           icon={BarChart3}
           title="No Analytics Data Available"
-          description="Complete quizzes, study sessions, or flashcards to generate your performance metrics."
+          description="Complete quizzes, study sessions, or AI study plans to generate your performance metrics."
         />
       ) : (
         <Box>
@@ -165,7 +164,7 @@ export default function Analytics() {
                 <StatCard
                   title="Study Sessions"
                   value={analyticsData.totalStudySessions || 0}
-                  subtitle={`${analyticsData.tasksCompleted || 0} tasks • ${analyticsData.flashcardMasteryPercent || 0}% flashcards`}
+                  subtitle={`${analyticsData.tasksCompleted || 0} / ${analyticsData.totalTasks || 0} tasks completed`}
                   icon={Clock}
                   gradient="linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)"
                   color="#8b5cf6"
@@ -244,24 +243,6 @@ export default function Analytics() {
                       />
                     </Box>
 
-                    {/* Flashcards */}
-                    <Box>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                          Flashcard Mastery (Known Cards)
-                        </Typography>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#10b981' }}>
-                          {analyticsData.knownFlashcards || 0} / {analyticsData.totalFlashcards || 0} ({analyticsData.flashcardMasteryPercent || 0}%)
-                        </Typography>
-                      </Box>
-                      <LinearProgress
-                        variant="determinate"
-                        value={analyticsData.flashcardMasteryPercent || 0}
-                        color="success"
-                        sx={{ height: 8, borderRadius: 4 }}
-                      />
-                    </Box>
-
                     {/* Quiz Completion */}
                     <Box>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
@@ -315,7 +296,7 @@ export default function Analytics() {
                     <AlertTriangle size={20} color="#f43f5e" /> Identified Weak Areas & Revision Recommended
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
-                    These topics scored below 60% accuracy in recent attempts. Target them in Flashcards and Study Planner:
+                    These topics scored below 60% accuracy in recent attempts. Target them in the AI Study Planner:
                   </Typography>
 
                   <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 2 }}>
@@ -331,10 +312,7 @@ export default function Analytics() {
                           {w.recommendation}
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1 }}>
-                          <Button component={Link} to="/flashcards" size="small" variant="contained" sx={{ fontWeight: 700 }}>
-                            Practice Flashcards
-                          </Button>
-                          <Button component={Link} to="/study-planner" size="small" variant="outlined" sx={{ fontWeight: 700 }}>
+                          <Button component={Link} to="/study-planner" size="small" variant="contained" sx={{ fontWeight: 700 }}>
                             Add to Plan
                           </Button>
                         </Box>

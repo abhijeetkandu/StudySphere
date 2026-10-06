@@ -24,7 +24,6 @@ import {
   Sparkles,
   Gamepad2,
   BrainCircuit,
-  Layers,
   Calendar as CalendarIcon,
   BarChart3,
   Megaphone,
@@ -266,11 +265,10 @@ export default function StudentDashboard() {
         <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, color: 'text.primary', display: 'flex', alignItems: 'center', gap: 1 }}>
           <Sparkles size={20} color="#6366f1" /> Quick Study Tools
         </Typography>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(6, 1fr)' }, gap: 1.5 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(5, 1fr)' }, gap: 1.5 }}>
           {[
             { label: 'Quiz Arena', path: '/quiz-game', icon: Gamepad2, color: '#f59e0b', desc: 'Gamified' },
             { label: 'AI Assistant', path: '/ai-assistant', icon: BrainCircuit, color: '#6366f1', desc: '24/7 Tutor' },
-            { label: 'Flashcards', path: '/flashcards', icon: Layers, color: '#06b6d4', desc: '3D Cards' },
             { label: 'Study Planner', path: '/study-planner', icon: Sparkles, color: '#10b981', desc: 'AI Schedule' },
             { label: 'Calendar', path: '/calendar', icon: CalendarIcon, color: '#8b5cf6', desc: 'Exams & Events' },
             { label: 'Analytics', path: '/analytics', icon: BarChart3, color: '#3b82f6', desc: 'Performance' },

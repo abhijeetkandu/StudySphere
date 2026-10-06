@@ -12,7 +12,6 @@ import QuizManagement from './pages/QuizManagement';
 import QuizGame from './pages/QuizGame';
 import AIStudyAssistant from './pages/AIStudyAssistant';
 import StudyPlanner from './pages/StudyPlanner';
-import Flashcards from './pages/Flashcards';
 import Reminders from './pages/Reminders';
 import Analytics from './pages/Analytics';
 import AnnouncementManagement from './pages/AnnouncementManagement';
@@ -140,14 +139,6 @@ export default function App() {
         element={
           <ProtectedRoute allowedRoles={['STUDENT']}>
             <StudyPlanner />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/flashcards"
-        element={
-          <ProtectedRoute allowedRoles={['STUDENT']}>
-            <Flashcards />
           </ProtectedRoute>
         }
       />

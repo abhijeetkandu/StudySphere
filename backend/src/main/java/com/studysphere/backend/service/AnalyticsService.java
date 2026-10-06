@@ -18,8 +18,6 @@ public class AnalyticsService {
     private final UserRepository userRepository;
     private final StudyPlanRepository studyPlanRepository;
     private final StudyTaskRepository studyTaskRepository;
-    private final FlashcardSetRepository flashcardSetRepository;
-    private final FlashcardRepository flashcardRepository;
     private final StudyMaterialRepository studyMaterialRepository;
 
     public Map<String, Object> getStudentAnalytics(Long studentId) {
@@ -55,18 +53,7 @@ public class AnalyticsService {
         List<StudyTask> tasks = !planIds.isEmpty() ? studyTaskRepository.findByStudyPlanIdIn(planIds) : Collections.emptyList();
         long tasksCompleted = tasks.stream().filter(t -> Boolean.TRUE.equals(t.getIsCompleted())).count();
 
-        // Fetch Flashcard mastery
-        List<FlashcardSet> sets = flashcardSetRepository.findByStudentIdOrderByCreatedAtDesc(studentId);
-        int totalFlashcards = 0;
-        int knownFlashcards = 0;
-        for (FlashcardSet s : sets) {
-            List<Flashcard> cards = flashcardRepository.findByFlashcardSetIdOrderByOrderIndexAsc(s.getId());
-            totalFlashcards += cards.size();
-            knownFlashcards += (int) cards.stream().filter(c -> "KNOWN".equalsIgnoreCase(c.getStatus())).count();
-        }
-        int flashcardMasteryPercent = totalFlashcards > 0 ? (int) Math.round(((double) knownFlashcards / totalFlashcards) * 100) : 0;
-
-        int totalStudySessions = totalAttempted + (int) tasksCompleted + sets.size();
+        int totalStudySessions = totalAttempted + (int) tasksCompleted;
 
         // Subject-wise performance
         Map<String, List<QuizAttempt>> attemptsBySubject = new HashMap<>();
@@ -106,7 +93,7 @@ public class AnalyticsService {
                 weakMap.put("subject", subName);
                 weakMap.put("accuracy", subAccuracy);
                 weakMap.put("averageScore", Math.round(subAvg * 10.0) / 10.0);
-                weakMap.put("recommendation", "Review key chapters and generate targeted flashcards on " + subName);
+                weakMap.put("recommendation", "Review key chapters and create targeted study plans on " + subName);
                 weakAreas.add(weakMap);
             }
         }
@@ -146,9 +133,6 @@ public class AnalyticsService {
         result.put("accuracyRate", accuracyRate);
         result.put("tasksCompleted", tasksCompleted);
         result.put("totalTasks", tasks.size());
-        result.put("totalFlashcards", totalFlashcards);
-        result.put("knownFlashcards", knownFlashcards);
-        result.put("flashcardMasteryPercent", flashcardMasteryPercent);
         result.put("totalStudySessions", totalStudySessions);
         result.put("subjectPerformance", subjectPerformance);
         result.put("weakAreas", weakAreas);

@@ -18,7 +18,6 @@ import {
 } from '@mui/material';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
-import { GoogleLogin } from '@react-oauth/google';
 import { Eye, EyeOff, BookOpen, BrainCircuit, Gamepad2, GraduationCap, School, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppTheme } from '../context/ThemeContext';
@@ -380,51 +379,16 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Conditional Subtext and Google Sign-in */}
+          {/* Student Registration Link */}
           {activePortal === 'STUDENT' && (
-            <>
-              <Divider sx={{ my: 2.5, color: 'text.secondary', fontSize: '0.8rem' }}>OR CONTINUE WITH</Divider>
-
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <GoogleLogin
-                  onSuccess={async (credentialResponse) => {
-                    setError('');
-                    try {
-                      const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ credential: credentialResponse.credential }),
-                      });
-
-                      const data = await response.json();
-
-                      if (response.ok) {
-                        sessionStorage.setItem('user', JSON.stringify(data));
-                        if (data.role === 'ADMIN') navigate('/admin');
-                        else if (data.role === 'TEACHER') navigate('/teacher');
-                        else navigate('/student');
-                      } else {
-                        setError(data.error || 'Google Sign-In failed');
-                      }
-                    } catch (err) {
-                      setError('Network error during Google Sign-In');
-                    }
-                  }}
-                  onError={() => setError('Google Authentication Failed')}
-                  useOneTap
-                  shape="pill"
-                />
-              </Box>
-
-              <Box sx={{ textAlign: 'center', mt: 3 }}>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  New student?{' '}
-                  <Link to="/register" style={{ color: theme.palette.primary.main, fontWeight: 700 }}>
-                    Create Student Account
-                  </Link>
-                </Typography>
-              </Box>
-            </>
+            <Box sx={{ textAlign: 'center', mt: 3 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                New student?{' '}
+                <Link to="/register" style={{ color: theme.palette.primary.main, fontWeight: 700 }}>
+                  Create Student Account
+                </Link>
+              </Typography>
+            </Box>
           )}
 
           {activePortal === 'TEACHER' && (

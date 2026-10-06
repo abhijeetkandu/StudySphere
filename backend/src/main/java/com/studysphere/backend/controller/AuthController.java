@@ -59,23 +59,6 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
-        try {
-            User user = authService.loginWithGoogle(request.getCredential());
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", user.getId());
-            response.put("name", user.getName());
-            response.put("email", user.getEmail());
-            response.put("role", user.getRole());
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
     @Data
     public static class RegisterRequest {
         private String name;
@@ -88,10 +71,5 @@ public class AuthController {
     public static class LoginRequest {
         private String email;
         private String password;
-    }
-
-    @Data
-    public static class GoogleLoginRequest {
-        private String credential; // The Google ID Token
     }
 }

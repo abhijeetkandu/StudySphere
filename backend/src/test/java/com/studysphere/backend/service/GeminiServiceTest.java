@@ -75,18 +75,6 @@ public class GeminiServiceTest {
         assertTrue(questions.get(0).containsKey("correctOption"));
     }
 
-    @Test
-    public void testGenerateFlashcards() {
-        GeminiService geminiService = new GeminiService();
-        ReflectionTestUtils.setField(geminiService, "geminiModel", "gemini-3.5-flash");
-        ReflectionTestUtils.setField(geminiService, "geminiApiUrl", "https://generativelanguage.googleapis.com/v1beta/models");
-
-        List<Map<String, String>> cards = geminiService.generateFlashcards("Operating Systems", "Process Management", "Deadlocks", 3, "Medium", "Banker's Algorithm");
-        assertNotNull(cards);
-        assertFalse(cards.isEmpty());
-        assertTrue(cards.get(0).containsKey("front"));
-        assertTrue(cards.get(0).containsKey("back"));
-    }
 
     @Test
     public void testGenerateStudyPlan() {
