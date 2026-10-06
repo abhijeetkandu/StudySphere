@@ -92,9 +92,9 @@ export default function AppLayout({ children }) {
     if (role === 'STUDENT') {
       return [
         { label: 'Dashboard', path: '/student', icon: GraduationCap },
-        { label: 'Quizzes Arena', path: '/quiz-game', icon: Gamepad2, badge: 'Play' },
-        { label: 'AI Assistant', path: '/ai-assistant', icon: BrainCircuit, badge: 'AI' },
-        { label: 'Study Planner', path: '/study-planner', icon: Sparkles, badge: 'AI' },
+        { label: 'Quizzes Arena', path: '/quiz-game', icon: Gamepad2 },
+        { label: 'AI Assistant', path: '/ai-assistant', icon: BrainCircuit },
+        { label: 'Study Planner', path: '/study-planner', icon: Sparkles },
         { label: 'Syllabus', path: '/syllabus', icon: BookOpen },
         { label: 'Timetable', path: '/timetable', icon: Clock },
         { label: 'Study Materials', path: '/materials', icon: FileText },
